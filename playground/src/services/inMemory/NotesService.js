@@ -1,4 +1,5 @@
 const {v4} = require('uuid');
+const NotFoundError = require('../../exceptions/NotFound');
 
 class NotesService {
   constructor() {
@@ -25,7 +26,7 @@ class NotesService {
   getNoteById(id) {
     const note = this._notes.find((note) => note.id === id);
     if (!note) {
-      throw new Error(`Catatan tidak ditemukan`);
+      throw new NotFoundError('Catatan tidak ditemukan');
     }
     return note;
   }
@@ -33,7 +34,7 @@ class NotesService {
   editNoteById(id, {title, body, tags}) {
     const noteIndex = this._notes.findIndex((note) => note.id === id);
     if (noteIndex === -1) {
-      throw new Error(`Catatan tidak ditemukan`);
+      throw new NotFoundError('Catatan tidak ditemukan');
     }
     const note = this._notes[noteIndex];
     const updatedAt = new Date().toISOString();
@@ -49,7 +50,7 @@ class NotesService {
   deleteNoteById(id) {
     const index = this._notes.findIndex((note) => note.id === id);
     if (index === -1) {
-      throw new Error(`Catatan tidak ditemukan`);
+      throw new NotFoundError('Catatan tidak ditemukan');
     }
     this._notes.splice(index, 1);
   }
