@@ -1,0 +1,12 @@
+{
+  "name": "playground",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start-dev": "nodemon src/server.js"
+  },
+  "dependencies": {
+    "@hapi/hapi": "^20.1.3"
+  }
+}
