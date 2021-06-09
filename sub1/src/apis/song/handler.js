@@ -8,6 +8,7 @@ class SongHandler {
     this.addSong = this.addSong.bind(this);
     this.getAllSongs = this.getAllSongs.bind(this);
     this.getSongById = this.getSongById.bind(this);
+    this.editSongById = this.editSongById.bind(this);
     this.deleteSongById = this.deleteSongById.bind(this);
   }
 
@@ -46,6 +47,19 @@ class SongHandler {
       return generateError(err, h);
     }
   }
+
+  async editSongById(request, h) {
+    try {
+      this._validator.validateSongPayload(request.payload);
+      const {id} = request.params;
+      await this._service.editSongById(id, request.payload);
+      const response = responseSuccessNoData(h, 'lagu berhasil diperbarui');
+      return response;
+    } catch (err) {
+      return generateError(err, h);
+    }
+  }
+
   async deleteSongById(request, h) {
     try {
       const {id} = request.params;

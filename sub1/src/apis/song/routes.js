@@ -15,6 +15,11 @@ module.exports = (handler) => [
     handler: handler.getSongById,
   },
   {
+    method: 'PUT',
+    path: '/songs/{id}',
+    handler: handler.editSongById,
+  },
+  {
     method: 'DELETE',
     path: '/songs/{id}',
     handler: handler.deleteSongById,
