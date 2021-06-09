@@ -7,6 +7,7 @@ class SongHandler {
 
     this.addSong = this.addSong.bind(this);
     this.getAllSongs = this.getAllSongs.bind(this);
+    this.getSongById = this.getSongById.bind(this);
     this.deleteSongById = this.deleteSongById.bind(this);
   }
 
@@ -35,6 +36,16 @@ class SongHandler {
     }
   }
 
+  async getSongById(request, h) {
+    try {
+      const {id} = request.params;
+      const song = await this._service.getSongById(id);
+      const response = responseSuccessWithData(h, {song});
+      return response;
+    } catch (err) {
+      return generateError(err, h);
+    }
+  }
   async deleteSongById(request, h) {
     try {
       const {id} = request.params;

@@ -28,7 +28,7 @@ exports.up = (pgm) => {
       type: 'SMALLINT',
       notNull: true,
     },
-    created_at: {
+    inserted_at: {
       type: 'TEXT',
       notNull: true,
     },
