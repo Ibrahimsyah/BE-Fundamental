@@ -4,4 +4,9 @@ module.exports = (handler) => [
     path: '/songs',
     handler: handler.addSong,
   },
+  {
+    method: 'GET',
+    path: '/songs',
+    handler: handler.getAllSongs,
+  },
 ];

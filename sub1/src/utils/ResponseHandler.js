@@ -1,12 +1,12 @@
 const ClientError = require('../exceptions/ClientError');
 
-const responseSuccessWithData = (h, message, data) => {
+const responseSuccessWithData = (h, data, message, statusCode = 200) => {
   const response = h.response({
     status: 'success',
     message,
     data,
   });
-  response.code(201);
+  response.code(statusCode);
   return response;
 };
 
