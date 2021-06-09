@@ -1,6 +1,7 @@
 const {Pool} = require('pg');
 const {nanoid} = require('nanoid');
 const InvariantError = require('../../exceptions/InvariantError');
+const {mapSongEntityToModel} = require('../../utils/Mapper');
 
 class SongService {
   constructor() {
@@ -23,6 +24,15 @@ class SongService {
     }
 
     return result.rows[0].id;
+  }
+
+  async getAllSongs() {
+    const query = 'select * from songs';
+    const result = await this._pool.query(query);
+    if (!result) {
+      throw new InvariantError('Lagu tidak ditemukan');
+    }
+    return result.rows.map(mapSongEntityToModel);
   }
 }
 
