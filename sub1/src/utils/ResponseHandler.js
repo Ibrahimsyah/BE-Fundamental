@@ -10,6 +10,15 @@ const responseSuccessWithData = (h, data, message, statusCode = 200) => {
   return response;
 };
 
+const responseSuccessNoData = (h, message, statusCode = 200) => {
+  const response = h.response({
+    status: 'success',
+    message,
+  });
+  response.code(statusCode);
+  return response;
+};
+
 const generateError = (error, h) => {
   if (error instanceof ClientError) {
     const response = h.response({
@@ -29,4 +38,4 @@ const generateError = (error, h) => {
 };
 
 
-module.exports = {responseSuccessWithData, generateError};
+module.exports = {responseSuccessWithData, responseSuccessNoData, generateError};

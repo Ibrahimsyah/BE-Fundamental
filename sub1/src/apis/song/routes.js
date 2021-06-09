@@ -9,4 +9,9 @@ module.exports = (handler) => [
     path: '/songs',
     handler: handler.getAllSongs,
   },
+  {
+    method: 'DELETE',
+    path: '/songs/{id}',
+    handler: handler.deleteSongById,
+  },
 ];
