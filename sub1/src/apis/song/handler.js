@@ -1,4 +1,4 @@
-const {generateError, responseSuccessWithData} = require('../../utils/ResponseHandler');
+const {generateError, responseSuccessWithData, responseSuccessNoData} = require('../../utils/ResponseHandler');
 
 class SongHandler {
   constructor(service, validator) {
@@ -7,6 +7,7 @@ class SongHandler {
 
     this.addSong = this.addSong.bind(this);
     this.getAllSongs = this.getAllSongs.bind(this);
+    this.deleteSongById = this.deleteSongById.bind(this);
   }
 
   async addSong(request, h) {
@@ -28,6 +29,17 @@ class SongHandler {
     try {
       const songs = await this._service.getAllSongs();
       const response = responseSuccessWithData(h, {songs});
+      return response;
+    } catch (err) {
+      return generateError(err, h);
+    }
+  }
+
+  async deleteSongById(request, h) {
+    try {
+      const {id} = request.params;
+      await this._service.deleteSongById(id);
+      const response = responseSuccessNoData(h, 'Lagu berhasil di hapus');
       return response;
     } catch (err) {
       return generateError(err, h);

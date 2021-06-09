@@ -1,6 +1,7 @@
 const {Pool} = require('pg');
 const {nanoid} = require('nanoid');
 const InvariantError = require('../../exceptions/InvariantError');
+const NotFound = require('../../exceptions/NotFound');
 const {mapSongEntityToModel} = require('../../utils/Mapper');
 
 class SongService {
@@ -33,6 +34,18 @@ class SongService {
       throw new InvariantError('Lagu tidak ditemukan');
     }
     return result.rows.map(mapSongEntityToModel);
+  }
+
+  async deleteSongById(songId) {
+    const query = {
+      text: 'delete from songs where id = $1',
+      values: [songId],
+    };
+
+    const result = await this._pool.query(query);
+    if (!result.rowCount) {
+      throw new NotFound(`Gagal menghapus lagu, lagu dengan id ${songId} tidak ditemukan`);
+    }
   }
 }
 
