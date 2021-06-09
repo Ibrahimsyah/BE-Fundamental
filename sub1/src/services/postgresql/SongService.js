@@ -48,6 +48,18 @@ class SongService {
     }
     return mapSongEntityToModel(result.rows[0]);
   }
+
+  async editSongById(songId, {title, year, performer, genre, duration}) {
+    const query = {
+      text: 'update songs set title = $1, year = $2, performer = $3, genre = $4, duration = $5 where id = $6',
+      values: [title, year, performer, genre, duration, songId],
+    };
+    const result = await this._pool.query(query);
+    if (!result.rowCount) {
+      throw new NotFound(`Lagu dengan id ${songId} tidak ditemukan`);
+    }
+  }
+
   async deleteSongById(songId) {
     const query = {
       text: 'delete from songs where id = $1',
