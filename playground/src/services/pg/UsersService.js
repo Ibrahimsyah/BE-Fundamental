@@ -1,6 +1,6 @@
 const {Pool} = require('pg');
 const InvariantError = require('../../exceptions/InvariantError');
-const {v4} = require('uuid');
+const {nanoid} = require('nanoid');
 const bcrypt = require('bcrypt');
 
 class UsersService {
@@ -11,7 +11,7 @@ class UsersService {
   async addUser({username, password, fullname}) {
     await this.verifyNewUsername(username);
 
-    const id = `user-${v4()}`;
+    const id = `user-${nanoid(5)}`;
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const query = {
@@ -38,3 +38,5 @@ class UsersService {
     }
   }
 }
+
+module.exports = UsersService;
