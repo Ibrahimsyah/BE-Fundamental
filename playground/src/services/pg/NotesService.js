@@ -1,5 +1,5 @@
 const {Pool} = require('pg');
-const {v4} = require('uuid');
+const {nanoid} = require('nanoid');
 const {mapDBToModel} = require('.');
 const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFound');
@@ -9,7 +9,7 @@ class NotesService {
   }
 
   async addNote({title, body, tags}) {
-    const id = v4();
+    const id = nanoid(10);
     const createdAt = new Date().toISOString();
     const updatedAt = createdAt;
 
