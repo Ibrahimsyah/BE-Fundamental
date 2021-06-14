@@ -1,8 +1,17 @@
+require('dotenv').config();
 const hapi = require('@hapi/hapi');
+
+// Notes
 const notes = require('./api/notes');
 const NotesService = require('./services/pg/NotesService');
 const NotesValidator = require('./validator/notes');
-require('dotenv').config();
+
+
+// Users
+const users = require('./api/users');
+const usersService = require('./services/pg/UsersService');
+const UsersValidator = require('./validator/users');
+
 
 const init = async () => {
   const notesService = new NotesService();
@@ -22,6 +31,14 @@ const init = async () => {
     options: {
       service: notesService,
       validator: NotesValidator,
+    },
+  });
+
+  await server.register({
+    plugin: users,
+    options: {
+      service: usersService,
+      validator: UsersValidator,
     },
   });
 
