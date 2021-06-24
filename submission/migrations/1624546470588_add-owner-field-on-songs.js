@@ -3,14 +3,13 @@
 exports.shorthands = undefined;
 
 exports.up = (pgm) => {
-  pgm.createTable('authentications', {
-    token: {
-      type: 'TEXT',
-      primaryKey: true,
+  pgm.addColumn('songs', {
+    owner: {
+      type: 'VARCHAR(10)',
     },
   });
 };
 
 exports.down = (pgm) => {
-  pgm.dropTable('authentications');
+  pgm.dropColumn('songs');
 };
