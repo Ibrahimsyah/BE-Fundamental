@@ -2,6 +2,7 @@ require('dotenv').config();
 const hapi = require('@hapi/hapi');
 const song = require('./apis/song');
 const user = require('./apis/user');
+const auth = require('./apis/authentications');
 
 // Songs
 const SongService = require('./services/postgresql/SongService');
@@ -11,6 +12,12 @@ const songValidator = require('./validations/songs');
 const UserService = require('./services/postgresql/UserService');
 const userValidator = require('./validations/users');
 
+// Authentications
+const AuthService = require('./services/postgresql/AuthService');
+const authValidator = require('./validations/authentications');
+
+// Tokenizer
+const tokenManager = require('./tokenizers/TokenManager');
 
 const startServer = async () => {
   const server = hapi.server({
@@ -41,6 +48,18 @@ const startServer = async () => {
     options: {
       service: userService,
       validator: userValidator,
+    },
+  });
+
+  // Auth Plugin
+  const authService = new AuthService();
+  await server.register({
+    plugin: auth,
+    options: {
+      authService: authService,
+      userService: userService,
+      tokenManager: tokenManager,
+      validator: authValidator,
     },
   });
 
