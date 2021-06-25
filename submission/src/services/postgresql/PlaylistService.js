@@ -31,7 +31,7 @@ class PlaylistService {
       values: [songId],
     };
     const results = await this._pool.query(query);
-    if (!results.rowCount) {
+    if (!results.rows.length) {
       throw new NotFound('Lagu tidak ditemukan');
     }
   }
@@ -42,7 +42,7 @@ class PlaylistService {
       values: [songId, playlistId],
     };
     const results = await this._pool.query(query);
-    if (!results.rowCount) {
+    if (!results.rows.length) {
       throw new NotFound('Lagu tidak ditemukan dalam playlist');
     }
   }
@@ -108,8 +108,8 @@ class PlaylistService {
   async deleteSongFromPlaylist(songId, playlistId) {
     await this.checkSongInPlaylist(songId, playlistId);
     const query = {
-      text: 'delete from song_playlists where song_id = $1',
-      values: [songId],
+      text: 'delete from song_playlists where song_id = $1 and playlist_id = $2',
+      values: [songId, playlistId],
     };
     await this._pool.query(query);
   }
