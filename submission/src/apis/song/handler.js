@@ -30,6 +30,7 @@ class SongHandler {
   async getAllSongs(_, h) {
     try {
       const songs = await this._service.getAllSongs();
+
       const response = responseSuccessWithData(h, {songs});
       return response;
     } catch (err) {
@@ -41,6 +42,7 @@ class SongHandler {
     try {
       const {id} = request.params;
       const song = await this._service.getSongById(id);
+
       const response = responseSuccessWithData(h, {song});
       return response;
     } catch (err) {
@@ -52,7 +54,9 @@ class SongHandler {
     try {
       this._validator.validateSongPayload(request.payload);
       const {id} = request.params;
+
       await this._service.editSongById(id, request.payload);
+
       const response = responseSuccessNoData(h, 'lagu berhasil diperbarui');
       return response;
     } catch (err) {
@@ -63,7 +67,9 @@ class SongHandler {
   async deleteSongById(request, h) {
     try {
       const {id} = request.params;
+
       await this._service.deleteSongById(id);
+
       const response = responseSuccessNoData(h, 'Lagu berhasil di hapus');
       return response;
     } catch (err) {

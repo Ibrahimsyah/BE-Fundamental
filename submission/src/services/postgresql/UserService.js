@@ -29,8 +29,8 @@ class UserService {
       text: 'insert into users values($1, $2, $3, $4) returning id',
       values: [id, username, hashedPassword, fullname],
     };
-
     const result = await this._pool.query(query);
+
     if (!result.rows[0].id) {
       throw new InvariantError('User gagal ditambahkan');
     }
@@ -44,17 +44,18 @@ class UserService {
       values: [username],
     };
     const result = await this._pool.query(query);
+
     if (!result.rows.length) {
       throw new AuthError('Kredensial yang Anda berikan salah');
     }
 
     const {id, password: hashedPassword} = result.rows[0];
-
     const isVerified = await bcrypt.compare(password, hashedPassword);
 
     if (!isVerified) {
       throw new AuthError('Kredensial yang Anda berikan salah');
     }
+
     return id;
   }
 }

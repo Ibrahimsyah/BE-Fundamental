@@ -15,9 +15,10 @@ class CollaborationHandler {
       this._validator.validatePostCollaborationPayload(request.payload);
       const {playlistId, userId} = request.payload;
       const {id: owner} = request.auth.credentials;
-      await this._playlistService.verifyPlaylistOwner(playlistId, owner);
 
+      await this._playlistService.verifyPlaylistOwner(playlistId, owner);
       const collaborationId = await this._collaborationService.addCollaboratorToPlaylist(userId, playlistId);
+
       const response = responseSuccessWithData(h, {collaborationId}, 'Kolaborasi berhasil ditambahkan', 201);
       return response;
     } catch (err) {
@@ -30,9 +31,10 @@ class CollaborationHandler {
       this._validator.validatePostCollaborationPayload(request.payload);
       const {playlistId, userId} = request.payload;
       const {id: owner} = request.auth.credentials;
-      await this._playlistService.verifyPlaylistOwner(playlistId, owner);
 
+      await this._playlistService.verifyPlaylistOwner(playlistId, owner);
       await this._collaborationService.removeCollaboratorFromPlaylist(userId, playlistId);
+
       const response = responseSuccessNoData(h, 'Pengguna berhasil dihapus dari kolaborator');
       return response;
     } catch (err) {
