@@ -31,6 +31,14 @@ class CollaborationService {
     const collaborationId = await this._pool.query(query);
     return collaborationId;
   }
+
+  async removeCollaboratorFromPlaylist(userId, playlistId) {
+    const query = {
+      text: 'delete from collaborations where playlist_id = $1 and user_id = $2',
+      values: [playlistId, userId],
+    };
+    await this._pool.query(query);
+  }
 }
 
 module.exports = CollaborationService;

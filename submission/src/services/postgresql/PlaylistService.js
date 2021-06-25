@@ -9,18 +9,18 @@ class PlaylistService {
     this._pool = new Pool();
   }
 
-  async verifyPlaylistOwner(playlistId, owner) {
+  async verifyPlaylistOwner(playlistId, userId) {
     const query = {
-      text: 'select * from playlists where id = $1',
-      values: [playlistId],
+      text:
+      ` 
+      select * from collaborations c
+      right join playlists p on c.playlist_id  = p.id 
+      where p.id = $1 and (c.user_id = $2 or p.owner = $2)
+      `,
+      values: [playlistId, userId],
     };
     const results = await this._pool.query(query);
-    if (!results.rowCount) {
-      throw new NotFound('Playlist tidak ditemukan');
-    }
-
-    const playlist = results.rows[0];
-    if (playlist.owner != owner) {
+    if (!results.rows.length) {
       throw new AuthorizationError('Anda tidak memiliki akses');
     }
   }
@@ -63,17 +63,29 @@ class PlaylistService {
     return result.rows[0].id;
   }
 
-  async getPlaylistFromOwner(owner) {
+  async getPlaylistFromUser(userId) {
     const query = {
-      text: 'select p.id, name, username from playlists p inner join users u on p.owner = u.id where p.owner = $1',
-      values: [owner],
+      text:
+      `
+      select p."id", p."name" , u.username from users u 
+      inner join playlists p on p."owner" = u.id 
+      where u.id = $1
+      union 
+      select p2."name",  p2."name" , u3.username from users u2 
+      inner join collaborations c on c.user_id  = u2.id 
+      inner join playlists p2 on p2.id = c.playlist_id
+      inner join users u3 on u3.id = p2."owner"
+      where u2.id  = $1
+      `,
+      values: [userId],
     };
 
     const result = await this._pool.query(query);
     return result.rows;
   }
 
-  async deletePlaylistFromOwner(playlistId, owner) {
+  async deletePlaylistFromUser(playlistId, userId) {
+    // TODO: Fix logic
     const query = {
       text: 'select * from playlists where id = $1',
       values: [playlistId],
@@ -84,7 +96,7 @@ class PlaylistService {
       throw new NotFound('Playlist tidak ditemukan');
     }
     const playlist = result.rows[0];
-    if (playlist.owner != owner) {
+    if (playlist.owner != userId) {
       throw new AuthorizationError('Anda bukan pemilik playlist');
     }
 
@@ -109,7 +121,7 @@ class PlaylistService {
     await this.checkSongInPlaylist(songId, playlistId);
     const query = {
       text: 'delete from song_playlists where song_id = $1 and playlist_id = $2',
-      values: [songId, playlistIdd],
+      values: [songId, playlistId],
     };
     await this._pool.query(query);
   }

@@ -29,9 +29,9 @@ class PlaylistHandler {
 
   async getUserPlaylist(request, h) {
     try {
-      const {id: owner} = request.auth.credentials;
+      const {id: userId} = request.auth.credentials;
 
-      const playlists = await this._service.getPlaylistFromOwner(owner);
+      const playlists = await this._service.getPlaylistFromUser(userId);
       const response = responseSuccessWithData(h, {playlists});
       return response;
     } catch (err) {
@@ -42,9 +42,9 @@ class PlaylistHandler {
   async deletePlaylist(request, h) {
     try {
       const {playlistId} = request.params;
-      const {id: owner} = request.auth.credentials;
+      const {id: userId} = request.auth.credentials;
 
-      await this._service.deletePlaylistFromOwner(playlistId, owner);
+      await this._service.deletePlaylistFromUser(playlistId, userId);
       const response = responseSuccessNoData(h, 'Playlist berhasil dihapus');
       return response;
     } catch (err) {

@@ -7,4 +7,12 @@ module.exports = (handler) => [
       auth: 'musicapp_jwt',
     },
   },
+  {
+    method: 'DELETE',
+    path: '/collaborations',
+    handler: handler.deleteCollaborator,
+    options: {
+      auth: 'musicapp_jwt',
+    },
+  },
 ];
