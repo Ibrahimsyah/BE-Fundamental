@@ -4,16 +4,6 @@ module.exports = (handler) => [
     path: '/authentications',
     handler: handler.postAuth,
   },
-  // {
-  //   method: 'GET',
-  //   path: '/authentications',
-  //   handler: handler.getAllSongs,
-  // },
-  // {
-  //   method: 'GET',
-  //   path: '/authentications/{id}',
-  //   handler: handler.getSongById,
-  // },
   {
     method: 'PUT',
     path: '/authentications',

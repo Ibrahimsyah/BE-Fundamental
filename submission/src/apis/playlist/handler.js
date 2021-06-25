@@ -20,6 +20,7 @@ class PlaylistHandler {
       const {name} = request.payload;
 
       const playlistId = await this._service.addPlaylist(name, owner);
+
       const response = responseSuccessWithData(h, {playlistId}, 'Playlist berhasil ditambahkan', 201);
       return response;
     } catch (err) {
@@ -32,6 +33,7 @@ class PlaylistHandler {
       const {id: userId} = request.auth.credentials;
 
       const playlists = await this._service.getPlaylistFromUser(userId);
+
       const response = responseSuccessWithData(h, {playlists});
       return response;
     } catch (err) {
@@ -45,6 +47,7 @@ class PlaylistHandler {
       const {id: userId} = request.auth.credentials;
 
       await this._service.deletePlaylistFromUser(playlistId, userId);
+
       const response = responseSuccessNoData(h, 'Playlist berhasil dihapus');
       return response;
     } catch (err) {
@@ -61,6 +64,7 @@ class PlaylistHandler {
 
       await this._service.verifyPlaylistOwner(playlistId, owner);
       await this._service.addSongToPlaylist(songId, playlistId);
+
       const response = responseSuccessNoData(h, 'Lagu berhasil ditambahkan ke playlist', 201);
       return response;
     } catch (err) {
@@ -77,6 +81,7 @@ class PlaylistHandler {
 
       await this._service.verifyPlaylistOwner(playlistId, owner);
       await this._service.deleteSongFromPlaylist(songId, playlistId);
+
       const response = responseSuccessNoData(h, 'Lagu berhasil dihapus ke playlist');
       return response;
     } catch (err) {
@@ -91,6 +96,7 @@ class PlaylistHandler {
 
       await this._service.verifyPlaylistOwner(playlistId, owner);
       const songs = await this._service.getSongsInPlaylist(playlistId);
+
       const response = responseSuccessWithData(h, {songs});
       return response;
     } catch (err) {

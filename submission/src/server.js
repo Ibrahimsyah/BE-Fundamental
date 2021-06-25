@@ -85,6 +85,7 @@ const startServer = async () => {
       validator: userValidator,
     },
   };
+
   // Auth Plugin
   const authPlugin = {
     plugin: auth,

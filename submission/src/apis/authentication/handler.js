@@ -6,6 +6,7 @@ class AuthenticationHandler {
     this._userService = userService;
     this._tokenManager = tokenManager;
     this._validator = validator;
+
     this.postAuth = this.postAuth.bind(this);
     this.putAuth = this.putAuth.bind(this);
     this.deleteAuth = this.deleteAuth.bind(this);
@@ -33,12 +34,12 @@ class AuthenticationHandler {
   async putAuth(request, h) {
     try {
       this._validator.validatePutPayload(request.payload);
-
       const {refreshToken} = request.payload;
-      await this._authService.verifyRefreshToken(refreshToken);
 
+      await this._authService.verifyRefreshToken(refreshToken);
       const id = this._tokenManager.validateRefreshToken(refreshToken);
       const accessToken = this._tokenManager.generateAccessToken(id);
+
       const response = responseSuccessWithData(h,
           {accessToken},
           'Authentication berhasil diperbarui', 200);
@@ -55,6 +56,7 @@ class AuthenticationHandler {
 
       await this._authService.verifyRefreshToken(refreshToken);
       await this._authService.deleteRefreshToken(refreshToken);
+
       const response = responseSuccessNoData(h, 'Refresh token berhasil dihapus', 200);
       return response;
     } catch (err) {

@@ -20,6 +20,7 @@ class PlaylistService {
       values: [playlistId, userId],
     };
     const results = await this._pool.query(query);
+
     if (!results.rows.length) {
       throw new AuthorizationError('Anda tidak memiliki akses');
     }
@@ -31,6 +32,7 @@ class PlaylistService {
       values: [songId],
     };
     const results = await this._pool.query(query);
+
     if (!results.rows.length) {
       throw new NotFound('Lagu tidak ditemukan');
     }
@@ -42,6 +44,7 @@ class PlaylistService {
       values: [songId, playlistId],
     };
     const results = await this._pool.query(query);
+
     if (!results.rows.length) {
       throw new NotFound('Lagu tidak ditemukan dalam playlist');
     }
@@ -54,8 +57,8 @@ class PlaylistService {
       text: 'insert into playlists values($1, $2, $3) returning id',
       values: [id, name, owner],
     };
-
     const result = await this._pool.query(query);
+
     if (!result.rows[0].id) {
       throw new InvariantError('Playlist gagal ditambahkan');
     }
@@ -79,13 +82,12 @@ class PlaylistService {
       `,
       values: [userId],
     };
-
     const result = await this._pool.query(query);
+
     return result.rows;
   }
 
   async deletePlaylistFromUser(playlistId, userId) {
-    // TODO: Fix logic
     const query = {
       text: 'select * from playlists where id = $1',
       values: [playlistId],
@@ -95,6 +97,7 @@ class PlaylistService {
     if (!result.rows.length) {
       throw new NotFound('Playlist tidak ditemukan');
     }
+
     const playlist = result.rows[0];
     if (playlist.owner != userId) {
       throw new AuthorizationError('Anda bukan pemilik playlist');
@@ -132,6 +135,7 @@ class PlaylistService {
       values: [playlistId],
     };
     const results = await this._pool.query(query);
+
     return results.rows;
   }
 }

@@ -17,8 +17,8 @@ class SongService {
       text: 'insert into songs values($1, $2, $3, $4, $5, $6, $7, $7) returning id',
       values: [id, title, year, performer, genre, duration, insertedAt],
     };
-
     const result = await this._pool.query(query);
+
     if (!result.rows[0].id) {
       throw new InvariantError('Lagu gagal ditambahkan');
     }
@@ -37,11 +37,12 @@ class SongService {
       text: 'select * from songs where id = $1',
       values: [songId],
     };
-
     const result = await this._pool.query(query);
+
     if (!result.rowCount) {
       throw new NotFound(`Lagu dengan id ${songId} tidak ditemukan`);
     }
+
     return mapSongEntityToModel(result.rows[0]);
   }
 
@@ -51,6 +52,7 @@ class SongService {
       values: [title, year, performer, genre, duration, songId],
     };
     const result = await this._pool.query(query);
+
     if (!result.rowCount) {
       throw new NotFound(`Lagu dengan id ${songId} tidak ditemukan`);
     }
@@ -61,8 +63,8 @@ class SongService {
       text: 'delete from songs where id = $1',
       values: [songId],
     };
-
     const result = await this._pool.query(query);
+
     if (!result.rowCount) {
       throw new NotFound(`Gagal menghapus lagu, lagu dengan id ${songId} tidak ditemukan`);
     }
