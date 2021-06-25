@@ -109,7 +109,7 @@ class PlaylistService {
     await this.checkSongInPlaylist(songId, playlistId);
     const query = {
       text: 'delete from song_playlists where song_id = $1 and playlist_id = $2',
-      values: [songId, playlistId],
+      values: [songId, playlistIdd],
     };
     await this._pool.query(query);
   }
