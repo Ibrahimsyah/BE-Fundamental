@@ -1,7 +1,9 @@
 require('dotenv').config();
+const path = require('path');
 
 const hapi = require('@hapi/hapi');
 const Jwt = require('@hapi/jwt');
+const Inert = require('@hapi/inert');
 
 // APIS
 const song = require('./apis/song');
@@ -10,6 +12,7 @@ const auth = require('./apis/authentication');
 const playlist = require('./apis/playlist');
 const collaboration = require('./apis/collaboration');
 const _export = require('./apis/export');
+const upload = require('./apis/upload');
 
 // Songs
 const SongService = require('./services/db/postgresql/SongService');
@@ -33,7 +36,11 @@ const collaborationValidator = require('./validations/collaborations');
 
 // Export
 const exportService = require('./services/messsage_queue/rabbitmq/ProducerService');
-const exportValidator = require('./validations/export');
+const exportValidator = require('./validations/exports');
+
+// Const upload
+const StorageService = require('./services/storage/StorageService');
+const uploadValidator = require('./validations/uploads');
 
 // Tokenizer
 const tokenManager = require('./tokenizers/TokenManager');
@@ -53,6 +60,8 @@ const startServer = async () => {
   });
 
   await server.register(Jwt);
+  await server.register(Inert);
+
   server.auth.strategy('musicapp_jwt', 'jwt', {
     keys: process.env.ACCESS_TOKEN_KEY,
     verify: {
@@ -75,6 +84,7 @@ const startServer = async () => {
   const authService = new AuthService();
   const playlistService = new PlaylistService();
   const collaborationService = new CollaborationService();
+  const storageService = new StorageService(path.resolve(__dirname, '../upload/images'));
   const redisCachingService = new RedisCachingService();
 
   // Song Plugin
@@ -120,9 +130,9 @@ const startServer = async () => {
   const collaborationPlugin = {
     plugin: collaboration,
     options: {
-      playlistService,
-      collaborationService,
-      collaborationValidator,
+      playlistService: playlistService,
+      collaborationService: collaborationService,
+      validator: collaborationValidator,
     },
   };
 
@@ -130,13 +140,22 @@ const startServer = async () => {
   const exportPlugin = {
     plugin: _export,
     options: {
-      exportService,
+      exportService: exportService,
       playlistService: playlistService,
       validator: exportValidator,
     },
   };
 
-  await server.register([songPlugin, userPlugin, authPlugin, playlistPlugin, collaborationPlugin, exportPlugin]);
+  // Upload plugin
+  const uploadPlugin = {
+    plugin: upload,
+    options: {
+      service: storageService,
+      validator: uploadValidator,
+    },
+  };
+
+  await server.register([songPlugin, userPlugin, authPlugin, playlistPlugin, collaborationPlugin, exportPlugin, uploadPlugin]);
   await server.start();
   console.log(`Server is running on ${server.info.uri}`);
 };
