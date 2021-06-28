@@ -107,6 +107,7 @@ const startServer = async () => {
     options: {
       service: playlistService,
       validator: playlistValidator,
+      cachingService: redisCachingService,
     },
   };
 

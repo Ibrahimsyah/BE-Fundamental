@@ -1,9 +1,10 @@
 const {generateError, responseSuccessWithData, responseSuccessNoData} = require('../../utils/ResponseHandler');
 
 class PlaylistHandler {
-  constructor(service, validator) {
+  constructor(service, validator, cachingService) {
     this._service = service;
     this._validator = validator;
+    this._cachingService = cachingService;
 
     this.addPlaylist = this.addPlaylist.bind(this);
     this.getUserPlaylist = this.getUserPlaylist.bind(this);
@@ -64,6 +65,7 @@ class PlaylistHandler {
 
       await this._service.verifyPlaylistOwner(playlistId, owner);
       await this._service.addSongToPlaylist(songId, playlistId);
+      await this._cachingService.delete(`playlistSong-${owner}`);
 
       const response = responseSuccessNoData(h, 'Lagu berhasil ditambahkan ke playlist', 201);
       return response;
@@ -81,6 +83,7 @@ class PlaylistHandler {
 
       await this._service.verifyPlaylistOwner(playlistId, owner);
       await this._service.deleteSongFromPlaylist(songId, playlistId);
+      await this._cachingService.delete(`playlistSong-${owner}`);
 
       const response = responseSuccessNoData(h, 'Lagu berhasil dihapus ke playlist');
       return response;
@@ -96,6 +99,7 @@ class PlaylistHandler {
 
       await this._service.verifyPlaylistOwner(playlistId, owner);
       const songs = await this._service.getSongsInPlaylist(playlistId);
+      await this._cachingService.insert(`playlistSong-${owner}`, songs);
 
       const response = responseSuccessWithData(h, {songs});
       return response;
