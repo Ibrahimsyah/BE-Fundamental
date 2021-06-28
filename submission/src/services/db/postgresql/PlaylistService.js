@@ -1,8 +1,8 @@
 const {Pool} = require('pg');
 const {nanoid} = require('nanoid');
-const InvariantError = require('../../exceptions/InvariantError');
-const NotFound = require('../../exceptions/NotFound');
-const AuthorizationError = require('../../exceptions/AuthorizationError');
+const InvariantError = require('../../../exceptions/InvariantError');
+const NotFound = require('../../../exceptions/NotFound');
+const AuthorizationError = require('../../../exceptions/AuthorizationError');
 
 class PlaylistService {
   constructor() {
@@ -51,7 +51,7 @@ class PlaylistService {
   }
 
   async addPlaylist(name, owner) {
-    const id = 'playlist-' + nanoid(5);
+    const id = `playlist-${nanoid(5)}`;
 
     const query = {
       text: 'insert into playlists values($1, $2, $3) returning id',

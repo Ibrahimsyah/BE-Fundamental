@@ -1,5 +1,5 @@
 const {Pool} = require('pg');
-const InvariantError = require('../../exceptions/InvariantError');
+const InvariantError = require('../../../exceptions/InvariantError');
 
 class AuthService {
   constructor() {
@@ -21,7 +21,7 @@ class AuthService {
     };
     const result = await this._pool.query(query);
 
-    if (!result.rows.length) {
+    if (!result.rowCount) {
       throw new InvariantError('Refresh token tidak valid');
     }
   }

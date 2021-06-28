@@ -9,29 +9,37 @@ const user = require('./apis/user');
 const auth = require('./apis/authentication');
 const playlist = require('./apis/playlist');
 const collaboration = require('./apis/collaboration');
+const _export = require('./apis/export');
 
 // Songs
-const SongService = require('./services/postgresql/SongService');
+const SongService = require('./services/db/postgresql/SongService');
 const songValidator = require('./validations/songs');
 
 // Users
-const UserService = require('./services/postgresql/UserService');
+const UserService = require('./services/db/postgresql/UserService');
 const userValidator = require('./validations/users');
 
 // Authentications
-const AuthService = require('./services/postgresql/AuthService');
+const AuthService = require('./services/db/postgresql/AuthService');
 const authValidator = require('./validations/authentications');
 
 // Playlists
-const PlaylistService = require('./services/postgresql/PlaylistService');
+const PlaylistService = require('./services/db/postgresql/PlaylistService');
 const playlistValidator = require('./validations/playlists');
 
 // Collaboration
-const CollaborationService = require('./services/postgresql/CollaborationService');
+const CollaborationService = require('./services/db/postgresql/CollaborationService');
 const collaborationValidator = require('./validations/collaborations');
+
+// Export
+const exportService = require('./services/messsage_queue/rabbitmq/ProducerService');
+const exportValidator = require('./validations/export');
 
 // Tokenizer
 const tokenManager = require('./tokenizers/TokenManager');
+
+// Caching
+const RedisCachingService = require('./services/caching/RedisService');
 
 const startServer = async () => {
   const server = hapi.server({
@@ -67,6 +75,7 @@ const startServer = async () => {
   const authService = new AuthService();
   const playlistService = new PlaylistService();
   const collaborationService = new CollaborationService();
+  const redisCachingService = new RedisCachingService();
 
   // Song Plugin
   const songPlugin = {
@@ -103,20 +112,31 @@ const startServer = async () => {
     options: {
       service: playlistService,
       validator: playlistValidator,
+      cachingService: redisCachingService,
     },
   };
 
-  // Collaborations Plugin
+  // Collaboration Plugin
   const collaborationPlugin = {
     plugin: collaboration,
     options: {
-      playlistService: playlistService,
-      collaborationService: collaborationService,
-      validator: collaborationValidator,
+      playlistService,
+      collaborationService,
+      collaborationValidator,
     },
   };
 
-  await server.register([songPlugin, userPlugin, authPlugin, playlistPlugin, collaborationPlugin]);
+  // Export Plugin
+  const exportPlugin = {
+    plugin: _export,
+    options: {
+      exportService,
+      playlistService: playlistService,
+      validator: exportValidator,
+    },
+  };
+
+  await server.register([songPlugin, userPlugin, authPlugin, playlistPlugin, collaborationPlugin, exportPlugin]);
   await server.start();
   console.log(`Server is running on ${server.info.uri}`);
 };
