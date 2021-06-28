@@ -9,6 +9,7 @@ const user = require('./apis/user');
 const auth = require('./apis/authentication');
 const playlist = require('./apis/playlist');
 const collaboration = require('./apis/collaboration');
+const _export = require('./apis/export');
 
 // Songs
 const SongService = require('./services/db/postgresql/SongService');
@@ -29,6 +30,10 @@ const playlistValidator = require('./validations/playlists');
 // Collaboration
 const CollaborationService = require('./services/db/postgresql/CollaborationService');
 const collaborationValidator = require('./validations/collaborations');
+
+// Export
+const exportService = require('./services/messsage_queue/rabbitmq/ProducerService');
+const exportValidator = require('./validations/export');
 
 // Tokenizer
 const tokenManager = require('./tokenizers/TokenManager');
@@ -111,17 +116,27 @@ const startServer = async () => {
     },
   };
 
-  // Collaborations Plugin
+  // Collaboration Plugin
   const collaborationPlugin = {
     plugin: collaboration,
     options: {
-      playlistService: playlistService,
-      collaborationService: collaborationService,
-      validator: collaborationValidator,
+      playlistService,
+      collaborationService,
+      collaborationValidator,
     },
   };
 
-  await server.register([songPlugin, userPlugin, authPlugin, playlistPlugin, collaborationPlugin]);
+  // Export Plugin
+  const exportPlugin = {
+    plugin: _export,
+    options: {
+      exportService,
+      playlistService: playlistService,
+      validator: exportValidator,
+    },
+  };
+
+  await server.register([songPlugin, userPlugin, authPlugin, playlistPlugin, collaborationPlugin, exportPlugin]);
   await server.start();
   console.log(`Server is running on ${server.info.uri}`);
 };
