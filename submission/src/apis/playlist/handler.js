@@ -98,8 +98,12 @@ class PlaylistHandler {
       const {id: owner} = request.auth.credentials;
 
       await this._service.verifyPlaylistOwner(playlistId, owner);
-      const songs = await this._service.getSongsInPlaylist(playlistId);
-      await this._cachingService.insert(`playlistSong-${owner}`, songs);
+
+      let songs = await this._cachingService.get(`playlistSong-${owner}`);
+      if (!songs) {
+        songs = await this._service.getSongsInPlaylist(playlistId);
+        await this._cachingService.insert(`playlistSong-${owner}`, songs);
+      }
 
       const response = responseSuccessWithData(h, {songs});
       return response;
