@@ -33,6 +33,9 @@ const collaborationValidator = require('./validations/collaborations');
 // Tokenizer
 const tokenManager = require('./tokenizers/TokenManager');
 
+// Caching
+const RedisCachingService = require('./services/caching/RedisService');
+
 const startServer = async () => {
   const server = hapi.server({
     host: process.env.HOST,
@@ -67,6 +70,7 @@ const startServer = async () => {
   const authService = new AuthService();
   const playlistService = new PlaylistService();
   const collaborationService = new CollaborationService();
+  const redisCachingService = new RedisCachingService();
 
   // Song Plugin
   const songPlugin = {
