@@ -1,4 +1,4 @@
-const {generateError, responseSuccessWithData, responseSuccessNoData} = require('../../utils/ResponseHandler');
+const {generateError, responseSuccessNoData} = require('../../utils/ResponseHandler');
 
 class ExportHandler {
   constructor(exportService, playlistService, validator) {
@@ -12,13 +12,13 @@ class ExportHandler {
   async exportPlaylist(request, h) {
     try {
       this._validator.validateExportPlaylistPayload(request.payload);
-      const {email} = request.payload;
+      const {targetEmail} = request.payload;
       const {playlistId} = request.params;
       const {id} = request.auth.credentials;
 
       const message = {
         userId: id,
-        targetEmail: email,
+        targetEmail: targetEmail,
       };
       await this._playlistService.verifyPlaylistOwner(playlistId, id);
       await this._exportService.sendMessage('export:playlist', message);

@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@hapi/hapi": "^20.1.3",
+    "@hapi/inert": "^6.0.3",
     "@hapi/jwt": "^2.0.1",
     "amqplib": "^0.8.0",
     "bcrypt": "^5.0.1",
