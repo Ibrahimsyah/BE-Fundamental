@@ -11,23 +11,23 @@ const playlist = require('./apis/playlist');
 const collaboration = require('./apis/collaboration');
 
 // Songs
-const SongService = require('./services/postgresql/SongService');
+const SongService = require('./services/db/postgresql/SongService');
 const songValidator = require('./validations/songs');
 
 // Users
-const UserService = require('./services/postgresql/UserService');
+const UserService = require('./services/db/postgresql/UserService');
 const userValidator = require('./validations/users');
 
 // Authentications
-const AuthService = require('./services/postgresql/AuthService');
+const AuthService = require('./services/db/postgresql/AuthService');
 const authValidator = require('./validations/authentications');
 
 // Playlists
-const PlaylistService = require('./services/postgresql/PlaylistService');
+const PlaylistService = require('./services/db/postgresql/PlaylistService');
 const playlistValidator = require('./validations/playlists');
 
 // Collaboration
-const CollaborationService = require('./services/postgresql/CollaborationService');
+const CollaborationService = require('./services/db/postgresql/CollaborationService');
 const collaborationValidator = require('./validations/collaborations');
 
 // Tokenizer

@@ -1,8 +1,8 @@
 const {Pool} = require('pg');
 const {nanoid} = require('nanoid');
 const bcrypt = require('bcrypt');
-const InvariantError = require('../../exceptions/InvariantError');
-const AuthError = require('../../exceptions/AuthenticationError');
+const InvariantError = require('../../../exceptions/InvariantError');
+const AuthError = require('../../../exceptions/AuthenticationError');
 class UserService {
   constructor() {
     this._pool = new Pool();
