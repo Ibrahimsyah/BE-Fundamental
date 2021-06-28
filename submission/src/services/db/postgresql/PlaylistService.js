@@ -21,7 +21,7 @@ class PlaylistService {
     };
     const results = await this._pool.query(query);
 
-    if (!results.rows.length) {
+    if (!results.rowCount) {
       throw new AuthorizationError('Anda tidak memiliki akses');
     }
   }
@@ -31,9 +31,9 @@ class PlaylistService {
       text: 'select * from songs where id = $1',
       values: [songId],
     };
-    const results = await this._pool.query(query);
+    const result = await this._pool.query(query);
 
-    if (!results.rows.length) {
+    if (!result.rowCount) {
       throw new NotFound('Lagu tidak ditemukan');
     }
   }
@@ -45,7 +45,7 @@ class PlaylistService {
     };
     const results = await this._pool.query(query);
 
-    if (!results.rows.length) {
+    if (!results.rowCount) {
       throw new NotFound('Lagu tidak ditemukan dalam playlist');
     }
   }
@@ -82,9 +82,9 @@ class PlaylistService {
       `,
       values: [userId],
     };
-    const result = await this._pool.query(query);
+    const results = await this._pool.query(query);
 
-    return result.rows;
+    return results.rows;
   }
 
   async deletePlaylistFromUser(playlistId, userId) {
@@ -94,7 +94,7 @@ class PlaylistService {
     };
     const result = await this._pool.query(query);
 
-    if (!result.rows.length) {
+    if (!result.rowCount) {
       throw new NotFound('Playlist tidak ditemukan');
     }
 
