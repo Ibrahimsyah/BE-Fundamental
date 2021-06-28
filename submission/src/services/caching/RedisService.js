@@ -17,14 +17,14 @@ class RedisService {
     });
   }
 
-  insert(key, value) {
+  set(key, value, expirationInSecond = 3600) {
     return new Promise((resolve, reject) => {
-      this._redis.set(key, JSON.stringify(value), (err, ok) => {
+      this._redis.set(key, value, 'EX', expirationInSecond, (err, ok) => {
         if (err) {
           console.log('[Redis] insert error:', err.message);
-          reject(err);
+          return reject(err);
         }
-        resolve(ok);
+        return resolve(ok);
       });
     });
   }
@@ -34,21 +34,24 @@ class RedisService {
       this._redis.get(key, (err, value) => {
         if (err) {
           console.log('[Redis] get error:', err);
-          reject(err);
+          return reject(err);
         }
-        resolve(JSON.parse(value));
+        if (!value) {
+          return reject(new Error('Cache not found'));
+        }
+        return resolve(JSON.parse(value));
       });
     });
   }
 
   delete(key) {
     return new Promise((resolve, reject) => {
-      this._redis.del(key, (err, ok) => {
+      this._redis.del('', (err, ok) => {
         if (err) {
           console.log('[Redis] delete error:', err);
-          reject(err);
+          return reject(err);
         }
-        resolve(ok);
+        return resolve(ok);
       });
     });
   }
