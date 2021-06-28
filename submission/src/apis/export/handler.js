@@ -1,4 +1,4 @@
-const {generateError, responseSuccessWithData, responseSuccessNoData} = require('../../utils/ResponseHandler');
+const {generateError, responseSuccessNoData} = require('../../utils/ResponseHandler');
 
 class ExportHandler {
   constructor(exportService, playlistService, validator) {
