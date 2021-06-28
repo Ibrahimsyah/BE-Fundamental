@@ -1,7 +1,3 @@
-/* eslint-disable camelcase */
-
-exports.shorthands = undefined;
-
 exports.up = (pgm) => {
   pgm.sql('insert into users(id, username, password, fullname) values(\'a\', \'a\', \'a\', \'a\')');
   pgm.sql('update playlists set owner = \'a\' where owner = NULL');

@@ -21,7 +21,7 @@ class CollaborationService {
   async addCollaboratorToPlaylist(userId, playlistId) {
     await this.checkCollaboratorAlreadyInPlaylist(userId, playlistId);
 
-    const id = 'collab-' + nanoid(5);
+    const id = `collab-${nanoid(5)}`;
 
     const query = {
       text: 'insert into collaborations values($1, $2, $3) returning id',

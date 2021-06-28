@@ -20,7 +20,7 @@ class UserService {
     }
   }
   async addUser({username, password, fullname}) {
-    const id = 'user-' + nanoid(5);
+    const id = `user-${nanoid(5)}`;
 
     await this.checkUserAvaibility(username);
     const hashedPassword = bcrypt.hashSync(password, 11);
