@@ -65,7 +65,7 @@ class PlaylistHandler {
 
       await this._service.verifyPlaylistOwner(playlistId, owner);
       await this._service.addSongToPlaylist(songId, playlistId);
-      await this._cachingService.delete(`playlistSong:${owner}`);
+      await this._cachingService.delete(`playlist:${playlistId}`);
 
       const response = responseSuccessNoData(h, 'Lagu berhasil ditambahkan ke playlist', 201);
       return response;
@@ -83,7 +83,7 @@ class PlaylistHandler {
 
       await this._service.verifyPlaylistOwner(playlistId, owner);
       await this._service.deleteSongFromPlaylist(songId, playlistId);
-      await this._cachingService.delete(`playlistSong:${owner}`);
+      await this._cachingService.delete(`playlist:${playlistId}`);
 
       const response = responseSuccessNoData(h, 'Lagu berhasil dihapus ke playlist');
       return response;
@@ -101,10 +101,10 @@ class PlaylistHandler {
 
       let songs;
       try {
-        songs = await this._cachingService.get(`playlistSong:${owner}`);
+        songs = await this._cachingService.get(`playlist:${playlistId}`);
       } catch {
         songs = await this._service.getSongsInPlaylist(playlistId);
-        await this._cachingService.set(`playlistSong:${owner}`, JSON.stringify(songs));
+        await this._cachingService.set(`playlist:${playlistId}`, JSON.stringify(songs));
       }
 
       const response = responseSuccessWithData(h, {songs});

@@ -46,7 +46,7 @@ class RedisService {
 
   delete(key) {
     return new Promise((resolve, reject) => {
-      this._redis.del('', (err, ok) => {
+      this._redis.del(key, (err, ok) => {
         if (err) {
           console.log('[Redis] delete error:', err);
           return reject(err);
